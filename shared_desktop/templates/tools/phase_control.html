@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <div class="col-md-8">
+          <h2>Управление фазой контроллера</h2>
+
+          <!-- Форма для фильтров (количество контроллеров и таймаут) -->
+          <form id="controllersForm" method="get">
+            <div class="form-group row mb-2">
+              <div class="col-md-7">
+                <label for="numControllersSelect">Количество контроллеров:</label>
+                <select id="numControllersSelect" name="num_controllers" class="form-control" onchange="document.getElementById('controllersForm').submit();">
+                  {% for i in num_controllers_options %}
+                    <option value="{{ i }}" {% if num_controllers == i %}selected{% endif %}>{{ i }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="col-md-2">
+                <label for="timeoutSelect">Таймаут:</label>
+                <select id="timeoutSelect" name="timeout" class="form-control" onchange="document.getElementById('controllersForm').submit();">
+                  {% for i in timeout_options %}
+                    <option value="{{ i }}" {% if timeout == i %}selected{% endif %}>{{ i }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </form>
+
+          <ul></ul>
+
+          <!-- Форма для отправки данных фаз -->
+          <form method="post" class="form-inline">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+              <div class="row">
+                <div class="col-md-3">
+                  {{ form.ip_address }}
+                  {% if form.errors.ip_address %}
+                      <p style="color: red;">{{ form.errors.ip_address }}</p>
+                  {% endif %}
+                </div>
+                <div class="col-md-2">
+                  {{ form.phase_value }}
+                  {% if form.phase_value.errors %}
+                      <p style="color: red;">{{ form.phase_value.errors }}</p>
+                  {% endif %}
+                </div>
+                <div class="col-md-2">
+                  {{ form.protocol }}
+                  {% if form.protocol.errors %}
+                      <p style="color: red;">{{ form.protocol.errors }}</p>
+                  {% endif %}
+                </div>
+                <div class="col-md-2">
+                  <button type="button" class="btn btn-primary mb-2" onclick="setPhase('{{ form.prefix }}')">Отправить</button>
+                </div>
+                <div class="col-md-3">
+                  <input type="text" id="countdown_{{ form.prefix }}" readonly style="border: none; background-color: transparent; height: 40px; padding: 0;">
+                </div>
+              </div>
+            {% endfor %}
+          </form>
+
+          <script>
+            // Функция для обновления времени отсчета
+            function updateCountdown(formPrefix) {
+                const ipAddress = document.querySelector(`[name="${formPrefix}-ip_address"]`).value;
+                const protocol = document.querySelector(`[name="${formPrefix}-protocol"]`).value;
+                const url = new URL('/tools/get_phase/', window.location.origin);
+                url.searchParams.append('ip_address', ipAddress);
+                url.searchParams.append('protocol', protocol);
+
+                console.log('Fetching countdown...');  // Для отладки
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Data received:', data);  // Для отладки
+                        document.getElementById(`countdown_${formPrefix}`).value = data.countdown;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Инициализация обновления для каждой формы на странице
+            function initUpdate() {
+                {% for form in formset %}
+                  updateCountdown('{{ form.prefix }}');
+                  setInterval(function() { updateCountdown('{{ form.prefix }}'); }, 1000);  // Обновлять каждую секунду
+                {% endfor %}
+            }
+
+            window.onload = initUpdate;
+
+            // Функция для отправки данных фазы
+            function setPhase(formPrefix) {
+                const ipAddress = document.querySelector(`[name="${formPrefix}-ip_address"]`).value;
+                const phaseValue = document.querySelector(`[name="${formPrefix}-phase_value"]`).value;
+                const protocol = document.querySelector(`[name="${formPrefix}-protocol"]`).value;
+                const timeout = document.querySelector('#timeoutSelect').value;  // Получаем таймаут из формы фильтра
+                const url = new URL('/tools/set_phase/', window.location.origin);
+
+                // Добавляем параметры в URL
+                url.searchParams.append('ip_address', ipAddress);
+                url.searchParams.append('phase_value', phaseValue);
+                url.searchParams.append('protocol', protocol);
+                url.searchParams.append('timeout', timeout);
+
+                console.log('Sending data to set phase:', { ipAddress, phaseValue, protocol, timeout });  // Для отладки
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Data received:', data);  // Для отладки
+                        // Обработка ответа от сервера, если необходимо
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+          </script>
+
+          <ul></ul>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-8">
+                <a href="http://127.0.0.1:8000/manage_controllers/" class="btn btn-secondary mb-2" >Расширенная версия</a>
+              </div>
+            </div>
+          </div>
+
+          {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

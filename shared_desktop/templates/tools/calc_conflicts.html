@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="container">
+        <div class="row">
+  
+        {% include 'tools_sidebar.html' %}
+
+        <div class="col-md-8">
+          <h2>Расчет конфликтов</h2>
+
+          <!-- Инструкция -->
+          <div class="alert alert-light">
+            <h4>Инструкция:</h4>
+            <ul>
+              <li>Введите направления для каждой фазы в отдельной строке. 
+              <li>Перед направлениями можно, при необходимости добавить текст, за которым следует двоеточие, например: <code>Фаза1:1,2,3</code>.</li>
+              <li>Выберите тип контроллера, если он применим.</li>
+              <li>Отметьте опции для создания файлов конфигурации и конфликтов по необходимости.</li>
+              <li>Нажмите "Отправить" для генерации матрицы конфликтов и файлов конфигурации.</li>
+            </ul>
+          </div>
+
+            {% csrf_token %}
+            <div class="calc_conflicts" id="controllers">
+                <label class="calc_conflicts_controllers" id="testtt"> Тип ДК: </label>
+                <input type="radio" value="common" name="controller_type" checked id="common">
+                <label for="common">Общий</label>
+                <input type="radio" value="swarco" name="controller_type" id="swarco">
+                <label for="swarco">Swarco</label>
+                <input type="radio" value="peek" name="controller_type" id="peek">
+                <label for="peek">Peek</label>
+            </div>
+            <br><br>
+
+            <fieldset>
+                <legend> Опции </legend>
+                <div>
+                    <input type="checkbox" name="create_txt" id="create_txt">
+                    <label class="calc_conflicts_optinos" for="create_txt"> Создать txt файл с конфликтами: </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="binval_swarco" id="binval_swarco" disabled>
+                    <label class="calc_conflicts_optinos" for="binval_swarco"> Матрица конфликтов и бинарные значения фаз для swarco</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="make_config" id="make_config" disabled>
+                    <label class="calc_conflicts_optinos" for="make_config"> Создать файл конфигурации: </label>
+                    <input type="file" id="config_file" name="upload_config_file" multiple disabled>
+                </div>
+            </fieldset>
+            <br>
+
+            <table id="user_data">
+                <tr>
+                    <th>Введите фазы-направления</th>
+                    <th>Результат ввода</th>
+                    <th>Ошибки ввода:</th>
+                </tr>
+
+                <tr id="user_content">
+                    <td id="td_textarea_user_input">
+                        <textarea name="table_stages" id="stages_from_area"></textarea>
+                    </td>
+                    <td id="pretty_output_stages"></td>
+                    <td id="td_errors">
+
+                    </td>
+                </tr>
+            </table>
+
+            <p></p>
+
+            <!--<div id="pretty_output_stages"> </div>-->
+
+            <button title="" id="send_conflicts_data"> Отправить </button>
+            <p></p>
+
+
+
+            <div id="calculated_content"></div>
+
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="{% static 'js/toolkit_conflicts.js'%}"></script>
+
+        </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-9">
+          <h2>Подсчет длительности направлений Excel</h2>
+
+          <div class="alert alert-light mb-2 col-md-11">
+            <p>
+              Обработка "Дирижёр" отчета, суммирование фаз в которых участвует направление.<br>
+              Установите флажок рядом с группой, включение которой будет обозначать новый цикл.
+            </p>
+          </div>
+
+          {% load custom_tags %}
+
+          <form id="main-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group row mb-2">
+              <div class="col-11 d-flex align-items-center">
+                <select class="form-control" id="parameter_set" name="parameter_set" onchange="triggerUpload()">
+                  <option value="" disabled {% if not selected_set %}selected{% endif %}>Выберите сохраненые настройки</option>
+                  {% for parameter_set in parameter_sets %}
+                    <option value="{{ parameter_set.name }}"
+                      {% if selected_set and selected_set.name == parameter_set.name %}selected{% endif %}>
+                      {{ parameter_set.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-center">
+                <button type="submit" id="upload_button" name="upload_button" class="btn btn-primary" style="width: 125px; display: none;">Загрузить</button>
+              </div>
+              
+            </div>
+            
+            <script>
+              function triggerUpload() {
+                // Find the form and the upload button
+                var form = document.querySelector('form');
+                var uploadButton = document.getElementById('upload_button');
+                
+                // Trigger a click event on the upload button
+                if (uploadButton) {
+                  uploadButton.click();
+                }
+              }
+            </script>
+            
+          
+            <div class="form-group row mb-2">
+              <div class="col-9 d-flex align-items-center">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Введите номер объекта, для сохранения настроек"
+                  value="{% if selected_set %}{{ selected_set.name }}{% endif %}">
+              </div>
+              <div class="col-3 d-flex align-items-center">
+                <button type="submit" name="save_button" class="btn btn-dark" style="width: 125px;">Сохранить</button>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <div class="col-9 d-flex align-items-center">
+                <input type="file" class="form-control" id="file" name="file">
+              </div>
+              <div class="col-3 d-flex align-items-center">
+                <button type="submit" name="process_button" class="btn btn-primary" style="width: 125px;">Обработать</button>
+              </div>
+            </div>
+
+              <ul>
+              </ul>
+  
+
+              <div class="row">
+                <div class="col-9">
+  
+                  <div id="warning" class="alert alert-info" style="display:none;" role="alert">
+                    Пожалуйста, выберите основную группу, включение которой обозначет новый цикл.
+                  </div>
+  
+                </div>
+              </div>
+
+              <div id="phase-parameters">
+                {% for i in "1234567891011121314151617181920" %}
+                <div class="form-group row mb-1">
+                    <div class="col-md-1 d-flex justify-content-center align-items-center">
+                        <input class="form-check-input" type="radio" name="primary_group" id="primary_group{{ forloop.counter }}" 
+                               value="group{{ forloop.counter }}" 
+                               {% if data|is_primary_group_selected:forloop.counter %}checked{% endif %}>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="group{{ forloop.counter }}" 
+                               name="group{{ forloop.counter }}" placeholder="Сигнальная группа" 
+                               value="{{ data|get_item:forloop.counter }}">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="phases{{ forloop.counter }}" 
+                               name="phases{{ forloop.counter }}" placeholder="Фазы" 
+                               value="{{ data|get_phase:forloop.counter }}">
+                    </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="form-group row mb-1">
+              <div class="col-md-1 d-flex justify-content-center align-items-center">
+  
+              </div>
+
+            </div>
+            </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('main-form').addEventListener('submit', function(event) {
+    var radios = document.getElementsByName('primary_group');
+    var formValid = false;
+  
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked) {
+        formValid = true;
+        break;
+      }
+    }
+  
+    // Check which button was clicked
+    var buttonClicked = event.submitter.name;
+  
+    if (!formValid && (buttonClicked === 'process_button' || buttonClicked === 'save_button')) {
+      event.preventDefault();
+      document.getElementById('warning').style.display = 'block';
+    } else {
+      document.getElementById('warning').style.display = 'none';
+    }
+  });
+
+</script>
+  
+{% endblock %}

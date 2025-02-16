@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <div class="col-md-9">
+
+          <h2>Калькулятор фиксированного времени цикла</h2>
+
+
+          <form id="cycleCalculatorForm">
+
+            <div class="md-3">
+              <label for="phaseCount" class="form-label">Количество фаз:</label>
+              <input type="number" class="form-control" id="phaseCount" name="phaseCount" min="1" max="20" oninput="createPhaseInputs()" placeholder="Не более 20 фаз" value="4">
+              <p></p>
+            </div>
+
+            <div id="phaseInputs">
+              <!-- Здесь будут добавляться поля для времен фаз и промтакта -->
+            </div>
+
+          </form>
+
+        </div>
+  
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener("load", function() {
+    createPhaseInputs();
+  });
+  function createPhaseInputs() {
+    const phaseCount = parseInt(document.getElementById("phaseCount").value);
+
+    if (!isNaN(phaseCount) && phaseCount > 0 && phaseCount <= 20) {
+      const phaseInputsContainer = document.getElementById("phaseInputs");
+      phaseInputsContainer.innerHTML = ""; // Очищаем контейнер перед добавлением новых полей
+
+      for (let i = 1; i <= phaseCount; i++) {
+        const phaseRow = document.createElement("div");
+        phaseRow.className = "row mb-3"; // Добавляем класс row
+
+        const phaseDiv = document.createElement("div");
+        phaseDiv.className = "col-md-4";
+
+
+        const phaseInput = document.createElement("input");
+        phaseInput.type = "number";
+        phaseInput.className = "form-control";
+        phaseInput.name = `phase${i}`;
+        phaseInput.placeholder = `Время фазы ${i}`;
+        phaseDiv.appendChild(phaseInput);
+
+        phaseRow.appendChild(phaseDiv);
+
+        const promtaktaDiv = document.createElement("div");
+        promtaktaDiv.className = "col-md-4";
+
+
+
+        const promtaktaInput = document.createElement("input");
+        promtaktaInput.type = "number";
+        promtaktaInput.className = "form-control";
+        promtaktaInput.name = `promtakta${i}`;
+        promtaktaInput.placeholder = `Промтакт ${i}`;
+        promtaktaDiv.appendChild(promtaktaInput);
+
+        phaseRow.appendChild(promtaktaDiv);
+
+        const shiftDiv = document.createElement("div");
+        shiftDiv.className = "col-md-4";
+
+
+
+        const shiftInput = document.createElement("input");
+        shiftInput.type = "text";
+        shiftInput.className = "form-control-plaintext";
+        shiftInput.value = "0";
+        shiftInput.name = `shift${i-1}`;
+        shiftDiv.appendChild(shiftInput);
+
+        phaseRow.appendChild(shiftDiv);
+
+        phaseInputsContainer.appendChild(phaseRow);
+
+        // Добавить обработчик события на изменение значений фазы и промтакта для вычисления суммы
+        phaseInput.addEventListener("input", updateShift);
+        promtaktaInput.addEventListener("input", updateShift);
+      }
+        // Создаем контейнер для отображения последнего сдвига
+        const lastShiftContainer = document.createElement("div");
+        lastShiftContainer.className = "container";
+
+        // Создаем строку
+        const lastShiftRow = document.createElement("div");
+        lastShiftRow.className = "row mb-3"; // Используем класс "row" и отступ, чтобы разместить элементы в одной строке
+
+        // Создаем блок для текста "Общее время цикла"
+        const lastShiftDiv1 = document.createElement("div");
+        lastShiftDiv1.className = "col-md-auto";
+
+        const lastShiftHeader1 = document.createElement("input0");
+        lastShiftHeader1.className = "form-control-plaintext";
+        lastShiftHeader1.textContent = "Общее время цикла";
+        lastShiftHeader1.style.fontSize = "30px";
+
+        lastShiftDiv1.appendChild(lastShiftHeader1);
+
+        // Создаем блок для переменной
+        const lastShiftDiv2 = document.createElement("div");
+        lastShiftDiv2.className = "col-md-5";
+
+        const lastShiftInput2 = document.createElement("input");
+        lastShiftInput2.type = "text";
+        lastShiftInput2.className = "form-control-plaintext";
+        lastShiftInput2.value = "0";
+        lastShiftInput2.name = `shift${phaseCount}`;
+        lastShiftInput2.style.fontSize = "30px"; 
+
+        lastShiftDiv2.appendChild(lastShiftInput2);
+
+        // Добавляем блоки в строку
+        lastShiftRow.appendChild(lastShiftDiv1);
+        lastShiftRow.appendChild(lastShiftDiv2);
+
+        // Добавляем строку в контейнер
+        lastShiftContainer.appendChild(lastShiftRow);
+
+        // Добавляем контейнер в основной контейнер
+        phaseInputsContainer.appendChild(lastShiftContainer);
+    }
+  }
+
+  function updateShift() {
+    const phaseCount = parseInt(document.getElementById("phaseCount").value);
+
+    for (let i = 1; i <= phaseCount; i++) {
+      const phaseValue = parseFloat(document.querySelector(`input[name=phase${i}]`).value) || 0;
+      const promtaktaValue = parseFloat(document.querySelector(`input[name=promtakta${i}]`).value) || 0;
+      const prevShiftValue = i > 1 ? parseFloat(document.querySelector(`input[name=shift${i - 1}]`).value) || 0 : 0;
+
+      const shiftValue = phaseValue + promtaktaValue + prevShiftValue;
+
+      document.querySelector(`input[name=shift${i}]`).value = shiftValue.toFixed(0);
+    }
+  }
+</script>
+
+{% endblock %}

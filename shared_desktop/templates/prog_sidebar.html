@@ -1,0 +1,165 @@
+
+
+<div class="col-md-10 custom-margin-top">
+    <style>
+      .custom-margin-top {
+        margin-top: 15px;
+      }
+    </style>
+  </div>
+
+<div class="col-md-3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Общие стили для аккордеона */
+
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: #007bff;
+        }
+
+        .accordion-button:not(.collapsed) {
+            color: #ffffff;
+            background-color: #212529;
+        }
+
+        .list-unstyled {
+            padding-left: 0;
+        }
+
+        .list-unstyled li {
+            margin-bottom: 0.5rem;
+        }
+
+        .list-unstyled a {
+            text-decoration: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .list-unstyled a:hover {
+            color: #0056b3;
+        }
+
+        .list-unstyled i {
+            margin-right: 8px;
+        }
+
+        .fw-normal {
+            font-weight: normal;
+        }
+
+        .small {
+            font-size: 0.875rem;
+        }
+
+        /* Стиль для активного элемента аккордеона */
+        .active {
+            background-color: #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .accordion-button {
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Отступ для иконок в заголовках аккордеона */
+        .accordion-header .accordion-button i {
+            margin-right: 8px; /* Увеличенный отступ для заголовков */
+        }
+    </style>
+
+    <div class="accordion" id="passportAccordion">
+        <!-- Паспорт -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="passportHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#passportCollapse" aria-expanded="false" aria-controls="passportCollapse">
+                    <i class="fas fa-stream"></i> Паспорт
+                </button>
+            </h2>
+            <div id="passportCollapse" class="accordion-collapse collapse" aria-labelledby="passportHeading">
+                <div class="accordion-body">
+                    <ul class="list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'prog:equipment_layout' %}"><i class="fas fa-stream"></i> Схема расположения оборудования</a></li>
+                        <li><a href="{% url 'prog:table_of_directions' %}"><i class="fas fa-stream"></i> Таблица направлений</a></li>
+                        <li><a href="{% url 'prog:phase_images' %}"><i class="fas fa-stream"></i> Изображения фаз</a></li>
+                        <li><a href="{% url 'prog:fixed_program_tables' %}"><i class="fas fa-stream"></i> Таблицы фиксированных программ</a></li>
+                        <li><a href="{% url 'prog:the_layout_of_the_detectors' %}"><i class="fas fa-stream"></i> Схема расположения детекторов</a></li>
+                        <li><a href="{% url 'prog:table_of_detectors' %}"><i class="fas fa-stream"></i> Таблица детекторов</a></li>
+                        <li><a href="{% url 'prog:monitoring_of_peripheral_equipment' %}"><i class="fas fa-stream"></i> Контроль периферийного оборудования</a></li>
+                        <li><a href="{% url 'prog:phase_alternation' %}"><i class="fas fa-stream"></i> Чередование фаз</a></li>
+                        <li><a href="{% url 'prog:adaptive_program_tables' %}"><i class="fas fa-stream"></i> Таблицы адаптивных программ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Peek -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="peekHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#peekCollapse" aria-expanded="false" aria-controls="peekCollapse">
+                    <i class="fas fa-stream"></i> Peek
+                </button>
+            </h2>
+            <div id="peekCollapse" class="accordion-collapse collapse" aria-labelledby="peekHeading">
+                <div class="accordion-body">
+                    <ul class="list-unstyled fw-normal pb-1 small">
+                        <!-- Добавьте пункты для Peek здесь -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swarco -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="swarcoHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#swarcoCollapse" aria-expanded="false" aria-controls="swarcoCollapse">
+                    <i class="fas fa-stream"></i> Swarco
+                </button>
+            </h2>
+            <div id="swarcoCollapse" class="accordion-collapse collapse" aria-labelledby="swarcoHeading">
+                <div class="accordion-body">
+                    <ul class="list-unstyled fw-normal pb-1 small">
+                        <!-- Добавьте пункты для Swarco здесь -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Поток -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="potokHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#potokCollapse" aria-expanded="false" aria-controls="potokCollapse">
+                    <i class="fas fa-stream"></i> Поток
+                </button>
+            </h2>
+            <div id="potokCollapse" class="accordion-collapse collapse" aria-labelledby="potokHeading">
+                <div class="accordion-body">
+                    <ul class="list-unstyled fw-normal pb-1 small">
+                        <!-- Добавьте пункты для Потока здесь -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Получаем текущий URL страницы
+      var currentUrl = window.location.pathname;
+
+      // Проверяем, находится ли текущий URL в категории "prog/passport/"
+      if (currentUrl.indexOf('/prog/passport/') === 0) {
+          // Если да, то добавляем класс "show" к аккордеону
+          var passportCollapse = document.getElementById('passportCollapse');
+          if (passportCollapse) {
+              passportCollapse.classList.add('show');
+          }
+      }
+  });
+</script>

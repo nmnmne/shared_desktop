@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-9">
+          <h2>Инструмент подсчета фаз Excel</h2>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="file">Выберите файл для загрузки:</label>
+              <input type="file" class="form-control" id="file" name="file" required>
+            </div>
+
+            <ul>
+            </ul>
+
+            <p>
+              Обработка "Дирижёр" отчета, суммирование фаз в определенные группы и получение их длительности и количества циклов.
+            </p>
+
+            <div class="row">
+              <div class="col-8">
+                <div class="alert alert-light" role="alert">
+                  Перед обработкой отсортируйте таблицу по дате, "от старых к новым".
+                </div>
+              </div>
+            </div>
+
+            <div id="phase-parameters">
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group1" name="group1" placeholder="Название группы фаз" value="в обе стороны">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases1" name="phases1" placeholder="Фазы" value="2, 10, 11, 12, 13">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group2" name="group2" placeholder="Название группы фаз" value="в область">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases2" name="phases2" placeholder="Фазы" value="1, 6, 7, 8, 9">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group3" name="group3" placeholder="Название группы фаз" value="по Салтыковской">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases3" name="phases3" placeholder="Фазы" value="4, 5, 26, 27, 28, 29">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group4" name="group4" placeholder="Название группы фаз">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases4" name="phases4" placeholder="Фазы">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group5" name="group5" placeholder="Название группы фаз">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases5" name="phases5" placeholder="Фазы">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group6" name="group6" placeholder="Название группы фаз">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases6" name="phases6" placeholder="Фазы">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group7" name="group7" placeholder="Название группы фаз">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases7" name="phases7" placeholder="Фазы">
+                </div>
+              </div>
+              <div class="form-group row mb-2">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="group8" name="group8" placeholder="Название группы фаз">
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="phases8" name="phases8" placeholder="Фазы">
+                </div>
+              </div>
+              <!-- Add more fields as needed -->
+            </div>
+            <button type="submit" class="btn btn-primary">Загрузить и обработать</button>
+          </form>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

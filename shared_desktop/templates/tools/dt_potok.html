@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+          <h2>Генерация строк для программирования ДК Поток</h2>
+
+          <!-- Инструкция -->
+          <div class="alert alert-light">
+            <h4>Инструкция:</h4>
+            <p>Для генерации строки продления/запроса ДК Поток, введите диапазоны номеров детекторов и номер группы в следующем формате:</p>
+            <ul>
+              <li>Диапазоны номеров детекторов указываются через дефис или плюс, например: <code>1-4, 7-12</code></li>
+              <li>Номер группы указывается отдельно после диапазонов детекторов, например: <code>3</code></li>
+              <li>Пример корректного ввода: <code>1-4, 7-12, 3</code></li>
+              <li>При использовании дефиса диапазон детекторов объединяется логическим <code>or</code>, при использовании плюса логическим <code>and</code>.</li>
+            </ul>
+          </div>
+
+          <!-- Форма для ввода -->
+          <form method="post" action="">
+            {% csrf_token %}
+            <div class="form-group row mb-1">
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="det_ranges_and_group" name="det_ranges_and_group" 
+                       placeholder="Пример: 1-4, 7-12, 3"
+                       value="{{ request.POST.det_ranges_and_group }}">
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Сгенерировать</button>
+              </div>
+            </div>
+          </form>
+
+          {% if error_message %}
+          <div class="mt-4 alert alert-danger">
+            <strong>Ошибка:</strong> {{ error_message }}
+          </div>
+          {% endif %}
+
+          {% if condition_string %}
+          <div class="mt-4">
+            <h4>Результат:</h4>
+            <p>{{ condition_string }}</p>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

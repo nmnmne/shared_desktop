@@ -1,0 +1,16 @@
+services:
+  shared_desktop-1:
+    image: inteonmteca/shared_desktop
+    env_file: .env
+    volumes:
+      - ./shared_desktop/static:/app/static
+      - ./shared_desktop/collected_static:/app/collected_static
+
+  gateway:
+    image: inteonmteca/shared_desktop_gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - shared_desktop-1
+    volumes:
+      - ./shared_desktop/collected_static:/app/collected_static

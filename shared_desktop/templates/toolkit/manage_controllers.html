@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+<div class="col-md-9">
+<h2>Расширенное управление контроллером</h2>
+
+<table class="table table-bordered">
+
+  <div class="d-flex align-items-center">
+    <div class="form-group me-3">
+      <label for="visible_hosts" class="form-label" style="width: 14rem;">Количество хостов</label>
+    </div>
+    <div class="form-group me-3">
+      <label for="polling_get_interval" class="form-label">Интервал обработки данных</label>
+    </div>
+  </div>
+  
+  <div class="d-flex align-items-center">
+    <div class="form-group me-3">
+      <select id="visible_hosts" class="form-control" style="width: 14rem;">
+        {% for num_host in num_hosts %}
+          <option value="{{ num_host }}">{{ num_host }}</option>
+        {% endfor %}
+      </select>
+    </div>
+      <div class="form-group me-3">
+        <input type="text" id="polling_get_interval" class="form-control" value="4" style="width: 14rem;">
+      </div>
+      <div class="form-group">
+        <button id="display_hosts_snmp" class="btn btn-primary">Отобразить</button>
+      </div>
+    </div>
+  </div>
+</table>
+
+<div>   
+  <label for="get_data_for_all_hosts">Отметить/снять "Получать данные с ДК" для всех хостов</label>
+  <input type="checkbox" id="get_data_for_all_hosts">
+</div>
+<!-- <div>
+    {% csrf_token %}
+        
+</div> -->
+{% csrf_token %}
+
+<br>
+
+{% for num_host in num_hosts %}
+
+<table id="table_{{num_host}}" class="table table-responsive table-bordered" style="
+  background-color: black;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+">
+  <caption class="text-end">Хост {{ num_host }}</caption>
+  <tbody>
+            <!-- Row 1: IP, SCN, Protocol -->
+  <tr>
+    <td>
+      <input type="text" name="ip" class="form-control form-control-sm immutable_data_snmp" id="ip_{{ num_host }}" maxlength="15" placeholder="IP-address">
+    </td>
+
+    <td>
+      <input type="text" name="scn" class="form-control form-control-sm immutable_data_snmp" id="scn_{{ num_host }}" maxlength="15" placeholder="SCN">
+    </td>
+
+    <td>
+      <select name="select_protocols" class="form-select form-select-sm immutable_data_snmp" id="protocol_{{ num_host }}" >
+        <option>Тип ДК</option>
+        {% for type_controller in types_controllers %}
+          <option value="{{ type_controller }}">{{ type_controller }}</option>
+        {% endfor %}
+      </select>
+    </td>
+
+    <td rowspan="3">
+      <select name="search_options" class="form-select form-select-sm search" id="searchoptions_{{ num_host }}" style="display: none;">
+        <option>По номеру СО</option>
+          <!-- <option>Названию СО</option> -->
+        </select>
+          <input type="text" name="search_host" class="form-control form-control-sm search_host" id="searchhost_{{ num_host }}" maxlength="20" placeholder="Поиск по номеру СО">
+    </td>
+
+  </tr>
+    <!-- Row 2: Data from DK -->
+    <tr>
+      <td>
+        <input class="form-check-input receive_data" type="checkbox" value="host_{{ num_host }}" id="getdatahost_{{ num_host }}">
+        <label class="form-check-label" for="getdatahost_{{ num_host }}">Получать данные</label>
+      </td>
+      <td colspan="2">
+        <textarea class="form-control form-control-sm userDisplay" id="displayGetData_{{ num_host }}" rows="3" readonly>Данные с ДК</textarea>
+      </td>
+      
+    </tr>
+    
+    <!-- Row 3: Control DK -->
+    <tr>
+      <td>
+        <select id="setCommand_{{ num_host }}" class="form-select form-select-sm">
+          <option>Выберите тип ДК</option>
+        </select>
+        <input type="text" name="setval" id="setval_{{ num_host }}" class="form-control form-control-sm" placeholder="Значение фазы/команды">
+      </td>
+ 
+      <td>
+        <input type="checkbox" name="checkbox_hold" class="form-check-input hold_request" id="hold_{{ num_host }}" disabled>
+        <label class="form-check-label" for="hold_{{ num_host }}">Удерживать</label>
+        <button class="btn btn-primary btn-sm set_request" id="SetToHost_{{ num_host }}">Отправить</button>
+        <label class="set_timers_val" id="setTimerVal_{{ num_host }}">0</label>
+      </td>
+    
+      <td>
+        <textarea class="form-control form-control-sm userDisplay" id="displaySendCommand_{{ num_host }}" readonly>Результат отправки команды</textarea>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+    
+
+{% endfor %}
+<!-- Кнопка для скрытия/отображения -->
+<button id="toggleButton" class="btn btn-dark mb-3">Показать/Скрыть параметры базы данных</button>
+
+<!-- Блок с таблицами, который будет скрываться/показываться -->
+<div id="configTables" class="d-none">
+  <table class="table">
+    <thead>
+      <tr>
+        <th colspan="1" class="text-left">Обновить БД по контроллерам</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input type="file" id="file_trafficlihgtdata_update" name="upload_trafficlihgtdata" class="form-control">
+        </td>
+        <td>
+          <button id="update_trafficlihgtdata" name="upd_trafficlihgtdata" class="btn btn-primary w-100">
+            Обновить
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+    
+  <table class="table mt-4">
+    <tbody>
+      <tr>
+        <td>
+          <button id="get_data_from_db" class="btn btn-secondary w-100">
+            Загрузить конфигурацию из базы
+          </button>
+        </td>
+        <td>
+          <select name="conf_from_db" id="configuration_from_db" class="form-select">
+            <!-- Options will be loaded dynamically -->
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <button id="send_data_to_db" class="btn btn-secondary w-100">
+            Добавить текущую конфигурацию в базу
+          </button>
+        </td>
+          <td>
+            <input type="text" id="name_configuration_datahosts" maxlength="20" placeholder="Введите название" class="form-control">
+          </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- JavaScript для скрытия/отображения -->
+<script>
+        // Находим кнопку и блок таблиц
+        const toggleButton = document.getElementById('toggleButton');
+        const configTables = document.getElementById('configTables');
+    
+        // Устанавливаем обработчик события для кнопки
+        toggleButton.addEventListener('click', () => {
+            // Переключаем видимость блока
+            configTables.classList.toggle('d-none');
+        });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="{% static 'js/controller_management_v2.js'%}"></script>
+{% endblock %}

@@ -1,0 +1,117 @@
+<div class="col-md-10 custom-margin-top">
+  <style>
+    .custom-margin-top {
+      margin-top: 15px;
+    }
+  </style>
+</div>
+<div class="col-md-3">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Общие стили для списка */
+    .list-group {
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+
+    /* Стили для элементов списка */
+    .list-group-item {
+        padding: 5px;
+        border: 1px solid #dee2e6;
+        border-bottom: 0; /* Убираем нижнюю границу, чтобы не было двойной линии */
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Стили для последнего элемента списка */
+    .list-group-item:last-child {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Стили при наведении */
+    .list-group-item:hover {
+        background-color: #000000;
+        color: #8cdece;
+    }
+
+    /* Стили для ссылок */
+    .list-group-item a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    /* Стили для ссылок при наведении */
+    .list-group-item a:hover {
+        color: #8cc4de;
+    }
+
+    /* Иконки для элементов списка */
+    .list-group-item i {
+        margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .list-group-item {
+            padding: 10px;
+        }
+    }
+  </style>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <a href="{% url 'tools:api_dir' %}"><i class="fas fa-cogs"></i> API Дирижёр</a>
+    </li>
+    {% comment %} <li class="list-group-item">
+      <a href="{% url 'tools:phase_control' %}" title="Управление фазой одного или нескольких контроллеров в режиме координации"><i class="fas fa-sync-alt"></i> Управление фазой</a>
+    </li> {% endcomment %}
+    <li class="list-group-item">
+      <a href="{% url 'tools:manage_controllers' %}" title="Управление контроллером"><i class="fas fa-tools"></i> Управление контроллером</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:get_firmware' %}" title="Версия прошивки контроллера"><i class="fas fa-microchip"></i> Версия прошивки контроллера</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:calculate_cycle' %}" title="Здесь можно посчитать время цикла и сдвиги"><i class="fas fa-clock"></i> Калькулятор времени цикла</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:restart_web_admin' %}" title="Если превышено количество сессий или другая ошибка на web"><i class="fas fa-redo"></i> Перезагрузить web ДК Поток</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:swarco_ssh' %}" title="Если превышено количество сессий или другая ошибка на web"><i class="fas fa-spinner"></i> Сброс сессий 'itc' Swarco</a>
+    </li>
+    {% comment %} <li class="list-group-item">
+      <a href="http://192.168.45.90/tools/restart_web_admin/" title="Если превышено количество сессий или другая ошибка на web">
+        <i class="fas fa-redo"></i> Перезагрузить web ДК Поток
+      </a> {% endcomment %}
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:openpyxl' %}"><i class="fas fa-file-excel"></i> Длительность работы направлений</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:dt_potok' %}"><i class="fas fa-database"></i> Генератор строк ДК Поток</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:calc_conflicts' %}"><i class="fas fa-exclamation-triangle"></i> Расчет конфликтов направлений</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:crcpeek' %}"><i class="fas fa-hashtag"></i> Расчет контрольной суммы RAG</a>
+    </li>
+    <li class="list-group-item">
+      <a href="http://192.168.45.66/tools/zabbix/" target="_blank">
+        <i class="fas fa-network-wired"></i> Мониторинг узлов сети
+      </a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:swarco_log' %}"><i class="fas fa-file-alt"></i> Рсшифровка логов Swarco</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:download_config' %}"><i class="fas fa-file-download"></i> Скачать конфигурацию Swarco</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:passport' %}"><i class="fas fa-file-signature"></i> Работа с паспортом</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'tools:tlc_potok' %}"><i class="fas fa-file-signature"></i> Работа с Traffic Light Configurator</a>
+    </li>
+  </ul>
+</div>

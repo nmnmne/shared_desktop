@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+          <h2>Работа с паспортом</h2>
+          <div id="main_div">
+    <label for="choose_option"> Выберите опцию: </label>
+    <select id="choose_option">
+        <option value="-">-</option>
+        <option value="compare_groups">Сравнить направления</option>
+        <option value="calc_groups_in_stages">Рассчитать направления в фазах</option>
+    </select>
+    <br><br>
+    <button id="calculate"> Рассчитать </button>
+    <br><br>
+    <table id="table_compare_groups">
+        <tr>
+            <th scope="col"> Таблица направлений </th>
+            <th scope="col"> Таблица фаз(Временная программа) </th>
+        </tr>
+        <td>
+            <textarea class="compare_groups" id="table_groups"></textarea>
+        </td>
+        <td>
+            <textarea class="compare_groups" id="table_stages"></textarea>
+        </td>
+
+    </table>
+    {% csrf_token %}
+    <br><br>
+    <table class="result_table" id="table_result_calc_groups_in_stages">
+        <caption>Результат расчёта привязки направлений к фазам:</caption>
+        <tr>
+            <td>
+                <textarea readonly id="textarea_result_calc_groups_in_stages"></textarea>
+            </td>
+        </tr>
+    </table>
+    <table class="result_table" id="table_result_compare_groups">
+        <caption>Результат сравнения групп:</caption>
+        <tr>
+            <th scope="col"> Номер направления </th>
+            <th scope="col"> Тип направления </th>
+            <th scope="col"> Фазы в которых участвует направление </th>
+            <th scope="col"> Ошибки </th>
+        </tr>
+
+    </table>
+</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/compare_groups.js'%}"></script>
+
+{% endblock %}

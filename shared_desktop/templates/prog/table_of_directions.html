@@ -1,0 +1,37 @@
+{% extends 'prog/prog.html' %}
+{% block page_content %}
+{% load static %}
+
+  <h3>
+    
+    Таблица направлений, светофоров и промтактов
+  
+  </h3>
+
+  <img src="{% static 'img/prog/passport/table_of_directions.png' %}" class="img-fluid">
+
+  <p>
+
+    Здесь светофоры привязываются к направлениям, а так же устанавливаются промтакты.
+
+  </p>
+
+  <p>
+
+    <b><span class="text-info">Запрет</span></b> - промтакты отрабатывающие после зеленого сигнала направления.<br>
+    &nbsp;&nbsp;<span class="text-info">Тзд</span> - Время дополнительного зеленого, который работает в промтакте.<br>
+    &nbsp;&nbsp;<span class="text-info">Тзм</span> - Время зеленого мигания.<br>
+    &nbsp;&nbsp;<span class="text-info">Тж</span> - Время желтого сигнала.<br>
+    &nbsp;&nbsp;<span class="text-info">Тк</span> - Время красного сигнала, перед включением конфликтного направления.
+
+  </p>
+
+  <p>
+
+    <b><span class="text-info">Разрешение</span></b> - промтакты не влияющие на время, включаются перед или во время фазы.<br>
+    &nbsp;&nbsp;<span class="text-info">Ткж</span> - Красно-желтый, перед зеленым, накладывается на предыдущий промтакт.<br>
+    &nbsp;&nbsp;<span class="text-info">Тз</span> - Зеленый запрет в конце фазы, внутри тела фазы.
+
+  </p>
+
+{% endblock %}

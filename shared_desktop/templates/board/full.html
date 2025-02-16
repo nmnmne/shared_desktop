@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<ul>
+</ul>
+
+{% for rule in rules %}
+
+  <div class="container rounded bg-primary">
+    <p>{{ rule.name }}</p>
+
+    <div class="container rounded bg-primary">
+
+      <ul>
+        <p>
+
+          <span class="text-info">Ответственный:</span> {{ rule.responsible}}<br>  
+          <span class="text-info">Комментарий:</span> {{ rule.comment}}<br>
+          {{ rule.pub_date|date:"d E Y"}}<br>
+          
+        </p>
+      </ul>
+
+      <p><pre>{{ rule.text }}</pre></p>
+
+    </div>
+
+  </div>
+
+  {% if not forloop.last %}{% endif %}
+
+{% endfor %} 
+{% endblock %}

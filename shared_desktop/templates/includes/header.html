@@ -1,0 +1,59 @@
+{% load static %}
+
+<nav class="navbar navbar-light" style="background-color: black">
+{% with request.resolver_match.view_name as view_name %}
+    <div class="container">
+
+      <a class="navbar-brand" href="{% url 'rules:rules' %}">
+        <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+        <span style="color:white">Рабочий стол транспортного инженера
+      </a>
+
+      <ul class="nav nav-tabs">
+
+        <li class="nav-item"> 
+          {% if view_name  == 'rules:full' %}
+            <a class="nav-link active" href="{% url 'rules:rules' %}">Расширенный вид</a>
+          {% elif view_name  == 'rules:rules' %}
+            <a class="nav-link active" href="{% url 'rules:full' %}">Обычный вид</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'rules:rules' %}">Главная</a>
+          {% endif %}
+        </li>
+
+        <li class="nav-item">
+          {% if view_name|slice:':5'  == 'prog:' %}
+            <a class="nav-link active" href="{% url 'prog:prog' %}">Программирование ДК</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'prog:prog' %}">Программирование ДК</a>
+          {% endif %}
+        </li>
+
+        <li class="nav-item"> 
+          
+          {% if view_name|slice:':6' == 'tools:' %}
+            <a class="nav-link active" href="{% url 'tools:tools' %}">Инструменты</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'tools:tools' %}">Инструменты</a>
+          {% endif %}
+        </li>
+
+        {% if user.is_authenticated %}
+
+          <li class="nav-item"> 
+            <a class="nav-link link-light" href="{% url 'users:logout' %}">Выйти</a>
+          </li>
+
+        {% else %}
+
+          <li class="nav-item"> 
+            <a class="nav-link link-light" href="{% url 'users:login' %}">Войти</a>
+          </li>
+
+        {% endif %}
+
+      </ul>
+
+    </div>
+{% endwith %} 
+</nav>

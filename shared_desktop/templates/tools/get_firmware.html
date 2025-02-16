@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+          <h2>Версия прошивки контроллера</h2>
+
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-3" style="width: 27%;">
+                <input type="text" class="form-control" id="ip" name="ip" placeholder="Введите IP адрес" value="{{ request.POST.ip }}" required>
+              </div>
+              <div class="col-md-2" style="width: 14%;">
+                <select class="form-control" id="protocol" name="protocol" required>
+                  <option value="Тип ДК">Тип ДК</option>
+                  <option value="Swarco">Swarco</option>
+                  <option value="Поток">Поток</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Получить</button>
+              </div>
+            </div>
+          </form>
+
+          {% if version %}
+            <br>
+            <h5>{{ version }}</h5>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

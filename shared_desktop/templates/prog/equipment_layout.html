@@ -1,0 +1,21 @@
+{% extends 'prog/prog.html' %}
+{% block page_content %}
+{% load static %}
+
+  <h3>
+    
+    Схематичное отображение оборудования
+  
+  </h3>
+
+  <img src="{% static 'img/prog/passport/equipment_layout.png' %}" class="img-fluid">
+  
+  <p>
+
+    Рядом со значком светофора указывается его номер, который используется
+    <a href="{% url 'prog:table_of_directions' %}">в таблице направлений</a>
+    для привязки нескольких светофоров к определенной группе.
+
+  </p>
+
+{% endblock %}

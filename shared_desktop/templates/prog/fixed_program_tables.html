@@ -1,0 +1,28 @@
+{% extends 'prog/prog.html' %}
+{% block page_content %}
+{% load static %}
+
+  <h3>
+    
+    Таблицы фиксированных программ
+  
+  </h3>
+
+  <img src="{% static 'img/prog/passport/fixed_program_tables.png' %}" class="img-fluid">
+
+  <p>
+
+    Здесь отображается номер, время и дни работы плана, направления которые участвуют в фазах и длительности.<br>
+
+  </p>
+
+  <p>
+
+    &nbsp;&nbsp;<span class="text-info">Тц</span> - Общее время цикла.<br>
+    &nbsp;&nbsp;<span class="text-info">Тосн</span> - Фиксированное время фазы.<br>
+    &nbsp;&nbsp;<span class="text-info">Тсдвиг</span> - Начало фазы относительно времени цикла.<br>
+    &nbsp;&nbsp;<span class="text-info">Тмин</span> - Время безопасности.<br>
+
+  </p>
+
+{% endblock %}

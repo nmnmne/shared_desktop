@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+          <h2>Сброс сессий пользователя 'itc' на Swarco</h2>
+
+          <form id="ssh-form" method="POST">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-3" style="width: 27%;">
+                <input type="text" class="form-control" id="ip" name="ip" placeholder="Введите IP адрес" value="{{ request.POST.ip }}" required>
+              </div>
+
+              <div class="col-md-2" style="width: 12%;">
+                  <button type="button" id="ps-button" class="btn btn-secondary">Показать</button>
+              </div>
+
+              <div class="col-md-3">
+                  <button type="button" id="kill-button" class="btn btn-danger">Сбросить</button>
+              </div>
+
+            <div class="col-md-2">
+              <button type="button" id="top-button" class="btn btn-primary" style="visibility: hidden;">Список процессов</button>
+            </div>
+          </div>
+          </form>
+          
+          <!-- Результат выполнения команд -->
+          <div id="top-output" class="mt-4">
+            <pre id="output"></pre>
+          </div>
+          
+          <div id="ps-output" class="mt-4">
+            <pre id="ps-result"></pre>
+          </div>
+          
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Функция для проверки формата IP-адреса
+  function isValidIP(ip) {
+    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
+    return ipRegex.test(ip);
+  }
+
+  // Общая функция проверки IP перед выполнением действия
+  function validateAndProceed(ip, callback) {
+    if (ip && isValidIP(ip)) {
+      callback();
+    } else {
+      alert("Введите корректный IP адрес в формате XXX.XXX.XXX.XXX");
+    }
+  }
+
+  // Событие для кнопки "Список процессов"
+  document.getElementById('top-button').addEventListener('click', function () {
+    const ip = document.getElementById('ip').value;
+    validateAndProceed(ip, function () {
+      // Выполним асинхронный запрос на сервер для команды top
+      fetch("{% url 'tools:execute_top' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({ ip: ip })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('output').textContent = data.result;
+          } else {
+            document.getElementById('output').textContent = "Ошибка выполнения команды.";
+          }
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+          document.getElementById('output').textContent = "Ошибка запроса.";
+        });
+    });
+  });
+
+  // Событие для кнопки "Показать"
+  document.getElementById('ps-button').addEventListener('click', function () {
+    const ip = document.getElementById('ip').value;
+    validateAndProceed(ip, function () {
+      // Выполним асинхронный запрос на сервер для команды ps
+      fetch("{% url 'tools:execute_ps' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({ ip: ip })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('ps-result').textContent = data.result;
+          } else {
+            document.getElementById('ps-result').textContent = "Ошибка выполнения команды.";
+          }
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+          document.getElementById('ps-result').textContent = "Ошибка запроса.";
+        });
+    });
+  });
+
+  // Событие для кнопки "Сбросить"
+  document.getElementById('kill-button').addEventListener('click', function () {
+    const ip = document.getElementById('ip').value;
+    validateAndProceed(ip, function () {
+      // Выполним асинхронный запрос на сервер для команды kill
+      fetch("{% url 'tools:execute_kill' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({ ip: ip })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('ps-result').textContent = data.result;
+          } else {
+            document.getElementById('ps-result').textContent = "Ошибка выполнения команды.";
+          }
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+          document.getElementById('ps-result').textContent = "Ошибка запроса.";
+        });
+    });
+  });
+</script>
+
+
+{% endblock %}

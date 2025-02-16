@@ -1,0 +1,27 @@
+{% extends 'prog/prog.html' %}
+{% block page_content %}
+{% load static %}
+
+  <h3>
+    
+    Изображения фаз
+  
+  </h3>
+
+  <img src="{% static 'img/prog/passport/phase_images.png' %}" class="img-fluid">
+
+  <p>
+    
+    Визуальное отображение направлений на схеме
+  
+  </p>
+
+  <p>
+
+    &nbsp;&nbsp;<span class="text-info">Основная фаза</span> - во всех планах имеет постоянный запрос.<br>
+    &nbsp;&nbsp;<span class="text-info">Вызывная фаза</span> - во всех планах присутствует условие вызова.<br>
+    &nbsp;&nbsp;<span class="text-info">Основная/ Вызывная фаза</span> - в некоторых планах фаза имеет постоянный запрос, в других присутствует условие вызова.<br>
+
+  </p>
+
+{% endblock %}

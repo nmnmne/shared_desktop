@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-9">
+          <h2>Выберете инструмент</h2>
+          <p>Здесь будет отображаться рабочая область выбранного инструмента.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSubtopics(li) {
+    const subtopics = li.nextElementSibling;
+    subtopics.classList.toggle("hidden");
+  }
+</script>
+
+{% endblock %}

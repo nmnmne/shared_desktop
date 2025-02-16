@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+          <h2>Работа с Traffic Light Configurator</h2>
+        <div id="main_div">
+
+    {% csrf_token %}
+     Условие продления/перехода из tlc
+    <br>
+    <input id="condition" maxlength="500"> <br> <br>
+    <button id="create_functions"> Сформировать функции из условия </button> <br>
+    <button id="get_condition_result"> Получить результат условия с определёнными функциями </button> <br><br>
+    <label id="condition_result"></label>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/potok_tlc.js'%}"></script>
+
+{% endblock %}

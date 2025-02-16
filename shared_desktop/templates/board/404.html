@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+        
+        {% include 'tools_sidebar.html' %}
+        {% load static %}
+        
+        <div class="col-md-8 d-flex align-items-center">
+          <img src="{% static 'img/404.png' %}" width="75" height="75" class="d-inline-block align-top mr-3" alt="">
+          <div style="margin-left: 10px;">
+            <h1>404 страница не существует</h1>
+            <p class="mb-0">Страницы с адресом <span class="text-success">{{ path }}</span> не существует</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

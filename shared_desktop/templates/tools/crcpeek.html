@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+        {% include 'tools_sidebar.html' %}
+        <div class="col-md-8">
+          <h2>Расчет контрольной суммы RAG</h2>
+          <form id="upload-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group row mb-1">
+              <div class="col-md-12">
+                <input type="file" class="form-control" id="file" name="file" required onchange="document.getElementById('upload-form').submit();">
+              </div>
+            </div>
+          </form>
+
+          {% if file_content %}
+          <form id="process-form" method="post">
+            {% csrf_token %}
+            <div class="form-group mt-3">
+              <label for="file-content">Содержимое файла</label>
+              <textarea class="form-control" id="file-content" name="file_content" rows="15" style="font-family: monospace;">{{ file_content }}</textarea>
+              <input type="hidden" name="initial_crc" value="{{ initial_crc }}">
+              <input type="hidden" name="sum_in_file" value="{{ sum_in_file }}">
+            </div>
+            <div class="form-group mt-2">
+              <button type="submit" class="btn btn-primary" name="action" value="process">Процесс</button>
+              <button type="submit" class="btn btn-success" name="action" value="save">Сохранить</button>
+            </div>
+          </form>
+          <div class="alert alert-info mt-3">
+            {% comment %} <strong>Начальная контрольная сумма:</strong> {{ initial_crc }}<br>
+            <strong>Текущая контрольная сумма:</strong> {{ crc_sum }}<br> {% endcomment %}
+            <strong>Разница контрольной суммы:</strong> {% if crc_diff is not None %}{{ crc_diff }}{% else %}0{% endif %}<br>
+            <strong>Сумма в файле:</strong> {{ sum_in_file }}<br>
+            <strong>Новая сумма в файле:</strong> {% if new_sum_in_file is not None %}{{ new_sum_in_file }}{% else %}0{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('file').addEventListener('change', function() {
+    document.getElementById('upload-form').submit();
+});
+</script>
+{% endblock %}

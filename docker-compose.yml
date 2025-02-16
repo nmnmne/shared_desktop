@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  shared_desktop-1:
+    build: ./shared_desktop/
+    env_file: ./shared_desktop/.env
+
+  gateway:
+    build: ./shared_desktop/gateway/
+    ports:
+      - 8000:80
+    depends_on:
+      - shared_desktop-1
+    volumes:
+      - ./shared_desktop/collected_static:/app/collected_static

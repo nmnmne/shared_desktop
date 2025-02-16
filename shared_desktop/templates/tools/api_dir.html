@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+          <h2>Информация с дорожного контроллера</h2>
+
+          <form id="controllerForm" method="post" action="{% url 'tools:api_dir' %}">
+            {% csrf_token %}
+            <div class="form-group row mb-1">
+              <div class="col-md-4">
+                <input type="text" class="form-control" id="controllerId" name="controllerId" placeholder='Введите номер объекта' required>
+              </div>
+              <div class="col-md-4">
+                <button type="button" class="btn btn-primary" id="startButton">Получить</button>
+              </div>
+            </div>
+          </form>
+
+          <div id="controllerInfo" style="margin-top: 20px;"></div>
+          <div id="controllerFaults" style="margin-top: 20px;"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let xp = "Privet"
+  console.log(xp);
+  var intervalId = null;
+
+  document.getElementById('startButton').addEventListener('click', function() {
+    if (intervalId) {
+      clearInterval(intervalId); // Если интервал уже существует, очищаем его
+    }
+    submitForm(); // Немедленно отправляем форму
+    intervalId = setInterval(submitForm, 1000); // Запускаем интервал
+  });
+
+  document.getElementById('controllerId').addEventListener('input', function() {
+    if (intervalId) {
+      clearInterval(intervalId); // Останавливаем автоматические запросы при изменении текста
+      intervalId = null;
+    }
+  });
+
+  document.getElementById('controllerForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Предотвращаем стандартную отправку формы при нажатии Enter
+    document.getElementById('startButton').click(); // Имитация нажатия кнопки для запуска автоматических запросов
+  });
+
+  function submitForm() {
+    var controllerId = document.getElementById('controllerId').value;
+    var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Отправка AJAX-запроса
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url 'tools:api_dir' %}', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          displayControllerInfo(response);
+          displayControllerFaults(response);
+        } else {
+          console.error('Ошибка запроса:', xhr.status);
+        }
+      }
+    };
+
+    xhr.send('controllerId=' + encodeURIComponent(controllerId));
+  }
+
+  function displayControllerInfo(data) {
+    var controllerInfoDiv = document.getElementById('controllerInfo');
+    if (data.Success) {
+        var modeText = '';
+        var modeStyle = '';
+
+        if (data.Controller.LocalWorkMode === 'Adaptive') {
+            modeText = 'VA';
+            modeStyle = 'font-weight: bold; color: #51835a;'; // Зеленый цвет и жирный текст для Adaptive
+        } else if (data.Controller.LocalWorkMode === 'Fixed') {
+            modeText = 'FT';
+        } else if (data.Controller.LocalWorkMode === 'Coordination') {
+            modeText = 'Координация';
+        }
+
+        // Получаем данные статуса контроллера, если они есть, иначе берем данные из контроллера
+        var plan = data.ControllerStatus?.Plan || data.Controller.Plan;
+        var phase = data.ControllerStatus?.Phase || data.Controller.Phase;
+        var signal = data.ControllerStatus?.Signal || data.Controller.Signal;
+        var errorLevel = data.ControllerStatus?.ErrorLevel || data.Controller.ErrorLevel;
+
+        // Преобразование сигналов
+        var signalMapping = {
+            "RAG": "Трехцветный",
+            "Amber": "ЖМ",
+            "Black": "На черном!"
+        };
+        var signalText = signalMapping[signal] || signal;
+
+        var html = '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Номер объекта:</strong></div>' +
+                   '<div style="flex: 2;">СО' + data.Controller.Name + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Тип ДК:</strong></div>' +
+                   '<div style="flex: 2;">' + data.Controller.TypeName + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>IP Адрес:</strong></div>' +
+                   '<div style="flex: 2;">' + data.Controller.IpAddress + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Адрес:</strong></div>' +
+                   '<div style="flex: 2;">' + data.Controller.Address + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Примечание:</strong></div>' +
+                   '<div style="flex: 2;">' + data.Controller.Note + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Режим:</strong></div>' +
+                   '<div style="flex: 2; ' + modeStyle + '">' + modeText + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>План:</strong></div>' +
+                   '<div style="flex: 2;">' + plan + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Фаза:</strong></div>' +
+                   '<div style="flex: 2;">' + phase + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Лампы:</strong></div>' +
+                   '<div style="flex: 2;">' + signalText + '</div>' +
+                   '</div>' +
+                   '<div style="display: flex; justify-content: space-between;">' +
+                   '<div style="flex: 1;"><strong>Уровень ошибки:</strong></div>' +
+                   '<div style="flex: 2;">' + errorLevel + '</div>' +
+                   '</div>' +
+                   '<br><div style="text-align: left; margin-top: 10px;">' +
+                   '<a href="http://' + data.Controller.IpAddress + '" target="_blank" class="btn btn-primary">Перейти на web контроллера</a>' +
+                   '</div>';
+        controllerInfoDiv.innerHTML = html;
+    } else {
+        controllerInfoDiv.innerHTML = '<p><strong>Ошибка:</strong> ' + data.Message + '</p>';
+    }
+  }
+
+  function displayControllerFaults(data) {
+    var controllerFaultsDiv = document.getElementById('controllerFaults');
+    controllerFaultsDiv.innerHTML = ''; // Очищаем контейнер перед добавлением новых данных
+
+    if (data.Success && data.ControllerStatus.Faults.length > 0) {
+        var html = '';
+        data.ControllerStatus.Faults.forEach(function(fault) {
+            var eventTime = new Date(fault.EventTime);
+            var formattedTime = eventTime.toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).replace(',', ''); // Удаляем запятую
+            html += '<div class="col-10" style="margin-bottom: 3px;">' + // Устанавливаем минимальный отступ
+                    '<div class="alert alert-light" role="alert" style="padding: 8px; margin: 0;">' + // Уменьшаем padding и margin
+                    '<strong><span style="color: #598bca;">' + formattedTime + ':</strong></span> ' + fault.Message +
+                    '</div>' +
+                    '</div>';
+        });
+        controllerFaultsDiv.innerHTML = html;
+    } else {
+        controllerFaultsDiv.innerHTML = ''; // Очищаем контейнер, если нет ошибок или запрос не успешен
+    }
+  }
+
+</script>
+
+{% endblock %}

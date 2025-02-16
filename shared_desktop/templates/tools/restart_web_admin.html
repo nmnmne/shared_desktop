@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        {% include 'tools_sidebar.html' %}
+
+        <!-- Правая часть страницы -->
+        <div class="col-md-8">
+            <h2>Перезагрузка web интерфейса ДК Поток</h2>
+        
+            <form id="restartForm" class="form-inline">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="ip_address" id="ip_address" placeholder="IP адрес" required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary">Перезагрузка</button>
+                    </div>
+                </div>
+            </form>
+        
+            <p id="responseMessage" style="color: green;"></p>
+        </div>
+        
+        <script>
+            document.getElementById('restartForm').addEventListener('submit', function(event) {
+                event.preventDefault();  // Отключаем стандартное поведение формы
+        
+                const ipAddress = document.getElementById('ip_address').value;
+        
+                fetch('http://192.168.45.90/api/restart_web_admin/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'  // Для защиты CSRF
+                    },
+                    body: JSON.stringify({ ip_address: ipAddress }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const messageElement = document.getElementById('responseMessage');
+                    if (data.status === 'success') {
+                        messageElement.style.color = 'green';
+                    } else {
+                        messageElement.style.color = 'red';
+                    }
+                    messageElement.textContent = data.message;
+                })
+                .catch(error => {
+                    document.getElementById('responseMessage').style.color = 'red';
+                    document.getElementById('responseMessage').textContent = 'Ошибка: ' + error;
+                });
+            });
+        </script>
+        
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
